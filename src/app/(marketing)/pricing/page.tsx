@@ -15,7 +15,7 @@ import { PRICING_PLANS } from "@/lib/stripe/pricing";
 export default function PricingPage() {
   return (
     <div className="container flex flex-col gap-8 py-8 md:py-12 lg:py-24">
-      <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
+      <div className="mx-auto flex max-w-232 flex-col items-center space-y-4 text-center">
         <h1 className="text-4xl leading-tight font-bold tracking-tighter md:text-6xl">
           Simple, transparent pricing
         </h1>
@@ -24,7 +24,7 @@ export default function PricingPage() {
         </p>
       </div>
 
-      <div className="mx-auto grid gap-6 md:max-w-[64rem] md:grid-cols-3">
+      <div className="mx-auto grid gap-6 md:max-w-5xl md:grid-cols-3">
         {PRICING_PLANS.map((plan) => (
           <Card key={plan.id} className={plan.highlighted ? "border-primary shadow-lg" : ""}>
             <CardHeader>
