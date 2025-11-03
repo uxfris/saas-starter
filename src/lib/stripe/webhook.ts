@@ -6,10 +6,7 @@ import type Stripe from "stripe";
 /**
  * Verify and construct Stripe webhook event
  */
-export function constructWebhookEvent(
-  payload: string | Buffer,
-  signature: string
-): Stripe.Event {
+export function constructWebhookEvent(payload: string | Buffer, signature: string): Stripe.Event {
   return stripe.webhooks.constructEvent(payload, signature, env.STRIPE_WEBHOOK_SECRET);
 }
 
@@ -21,7 +18,7 @@ export async function handleWebhookEvent(event: Stripe.Event): Promise<void> {
   await prisma.webhookEvent.create({
     data: {
       type: event.type,
-      data: event.data as any,
+      data: event.data as unknown as Record<string, unknown>,
     },
   });
 
@@ -55,7 +52,7 @@ export async function handleWebhookEvent(event: Stripe.Event): Promise<void> {
     });
   } catch (error) {
     console.error(`Error processing webhook ${event.type}:`, error);
-    
+
     // Store error
     await prisma.webhookEvent.updateMany({
       where: { type: event.type, processed: false },
@@ -155,7 +152,10 @@ async function handleInvoicePaymentFailed(invoice: Stripe.Invoice): Promise<void
  * Map Stripe subscription status to our database enum
  */
 function mapStripeStatus(status: Stripe.Subscription.Status) {
-  const statusMap: Record<Stripe.Subscription.Status, "ACTIVE" | "INACTIVE" | "PAST_DUE" | "CANCELED" | "TRIALING"> = {
+  const statusMap: Record<
+    Stripe.Subscription.Status,
+    "ACTIVE" | "INACTIVE" | "PAST_DUE" | "CANCELED" | "TRIALING"
+  > = {
     active: "ACTIVE",
     past_due: "PAST_DUE",
     canceled: "CANCELED",
@@ -168,4 +168,3 @@ function mapStripeStatus(status: Stripe.Subscription.Status) {
 
   return statusMap[status] || "INACTIVE";
 }
-

@@ -1,6 +1,13 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check } from "lucide-react";
 import { PRICING_PLANS } from "@/lib/stripe/pricing";
@@ -9,11 +16,11 @@ export default function PricingPage() {
   return (
     <div className="container flex flex-col gap-8 py-8 md:py-12 lg:py-24">
       <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
-        <h1 className="text-4xl font-bold leading-tight tracking-tighter md:text-6xl">
+        <h1 className="text-4xl leading-tight font-bold tracking-tighter md:text-6xl">
           Simple, transparent pricing
         </h1>
-        <p className="max-w-[750px] text-lg text-muted-foreground sm:text-xl">
-          Choose the plan that's right for you. All plans include our core features.
+        <p className="text-muted-foreground max-w-[750px] text-lg sm:text-xl">
+          Choose the plan that&apos;s right for you. All plans include our core features.
         </p>
       </div>
 
@@ -30,12 +37,12 @@ export default function PricingPage() {
             <CardContent className="space-y-4">
               <div className="flex items-baseline">
                 <span className="text-4xl font-bold">${plan.price}</span>
-                <span className="ml-2 text-muted-foreground">/{plan.interval}</span>
+                <span className="text-muted-foreground ml-2">/{plan.interval}</span>
               </div>
               <ul className="space-y-2">
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2">
-                    <Check className="h-5 w-5 shrink-0 text-primary" />
+                    <Check className="text-primary h-5 w-5 shrink-0" />
                     <span className="text-sm">{feature}</span>
                   </li>
                 ))}
@@ -43,9 +50,7 @@ export default function PricingPage() {
             </CardContent>
             <CardFooter>
               <Button className="w-full" variant={plan.highlighted ? "default" : "outline"} asChild>
-                <Link href="/dashboard">
-                  {plan.price === 0 ? "Get Started" : "Subscribe"}
-                </Link>
+                <Link href="/dashboard">{plan.price === 0 ? "Get Started" : "Subscribe"}</Link>
               </Button>
             </CardFooter>
           </Card>
@@ -54,4 +59,3 @@ export default function PricingPage() {
     </div>
   );
 }
-

@@ -2,7 +2,14 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 async function handleSignIn(formData: FormData) {
   "use server";
@@ -16,9 +23,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Sign In</CardTitle>
-          <CardDescription>
-            Enter your credentials to access your account
-          </CardDescription>
+          <CardDescription>Enter your credentials to access your account</CardDescription>
         </CardHeader>
         <form action={handleSignIn}>
           <CardContent className="space-y-4">
@@ -41,9 +46,9 @@ export default function LoginPage() {
             <Button type="submit" className="w-full">
               Sign In
             </Button>
-            <p className="text-sm text-muted-foreground text-center">
-              Don't have an account?{" "}
-              <Link href="/signup" className="font-medium text-primary hover:underline">
+            <p className="text-muted-foreground text-center text-sm">
+              Don&apos;t have an account?{" "}
+              <Link href="/signup" className="text-primary font-medium hover:underline">
                 Sign up
               </Link>
             </p>
@@ -53,4 +58,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

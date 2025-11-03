@@ -11,7 +11,7 @@ export interface ErrorResponse {
   };
 }
 
-export interface SuccessResponse<T = any> {
+export interface SuccessResponse<T = unknown> {
   data: T;
   message?: string;
 }
@@ -67,4 +67,3 @@ export interface GenerateContentResponse {
   content: string;
   tokens: number;
 }
-

@@ -20,7 +20,7 @@ export type UsageType = "AI_GENERATION" | "API_CALL" | "STORAGE" | "CREDITS";
 /**
  * API response types
  */
-export type ApiResponse<T = any> = {
+export type ApiResponse<T = unknown> = {
   data?: T;
   error?: string;
 };
@@ -67,4 +67,3 @@ export interface DashboardStats {
   storageUsed: number;
   subscriptionStatus: SubscriptionStatus;
 }
-

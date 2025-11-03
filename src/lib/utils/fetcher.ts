@@ -6,7 +6,7 @@ export class FetchError extends Error {
   constructor(
     message: string,
     public status: number,
-    public info?: any
+    public info?: unknown
   ) {
     super(message);
     this.name = "FetchError";
@@ -20,10 +20,7 @@ interface FetchOptions extends RequestInit {
 /**
  * Enhanced fetch with error handling and timeout
  */
-export async function fetcher<T = any>(
-  url: string,
-  options: FetchOptions = {}
-): Promise<T> {
+export async function fetcher<T = unknown>(url: string, options: FetchOptions = {}): Promise<T> {
   const { timeout = 30000, ...fetchOptions } = options;
 
   const controller = new AbortController();
@@ -42,9 +39,10 @@ export async function fetcher<T = any>(
     clearTimeout(timeoutId);
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
+      const error = await response.json().catch(() => ({}) as Record<string, unknown>);
       throw new FetchError(
-        error.message || `HTTP ${response.status}: ${response.statusText}`,
+        (error as { message?: string }).message ||
+          `HTTP ${response.status}: ${response.statusText}`,
         response.status,
         error
       );
@@ -68,7 +66,7 @@ export async function fetcher<T = any>(
 /**
  * GET request
  */
-export async function get<T = any>(
+export async function get<T = unknown>(
   url: string,
   options?: Omit<FetchOptions, "method" | "body">
 ): Promise<T> {
@@ -78,9 +76,9 @@ export async function get<T = any>(
 /**
  * POST request
  */
-export async function post<T = any>(
+export async function post<T = unknown>(
   url: string,
-  data?: any,
+  data?: unknown,
   options?: Omit<FetchOptions, "method">
 ): Promise<T> {
   return fetcher<T>(url, {
@@ -93,9 +91,9 @@ export async function post<T = any>(
 /**
  * PUT request
  */
-export async function put<T = any>(
+export async function put<T = unknown>(
   url: string,
-  data?: any,
+  data?: unknown,
   options?: Omit<FetchOptions, "method">
 ): Promise<T> {
   return fetcher<T>(url, {
@@ -108,9 +106,9 @@ export async function put<T = any>(
 /**
  * PATCH request
  */
-export async function patch<T = any>(
+export async function patch<T = unknown>(
   url: string,
-  data?: any,
+  data?: unknown,
   options?: Omit<FetchOptions, "method">
 ): Promise<T> {
   return fetcher<T>(url, {
@@ -123,10 +121,9 @@ export async function patch<T = any>(
 /**
  * DELETE request
  */
-export async function del<T = any>(
+export async function del<T = unknown>(
   url: string,
   options?: Omit<FetchOptions, "method" | "body">
 ): Promise<T> {
   return fetcher<T>(url, { ...options, method: "DELETE" });
 }
-

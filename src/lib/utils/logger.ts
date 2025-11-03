@@ -16,7 +16,7 @@ class Logger {
     this.level = process.env.NODE_ENV === "production" ? LogLevel.INFO : LogLevel.DEBUG;
   }
 
-  private log(level: LogLevel, message: string, ...args: any[]) {
+  private log(level: LogLevel, message: string, ...args: unknown[]) {
     if (level < this.level) return;
 
     const timestamp = new Date().toISOString();
@@ -39,19 +39,19 @@ class Logger {
     }
   }
 
-  debug(message: string, ...args: any[]) {
+  debug(message: string, ...args: unknown[]) {
     this.log(LogLevel.DEBUG, message, ...args);
   }
 
-  info(message: string, ...args: any[]) {
+  info(message: string, ...args: unknown[]) {
     this.log(LogLevel.INFO, message, ...args);
   }
 
-  warn(message: string, ...args: any[]) {
+  warn(message: string, ...args: unknown[]) {
     this.log(LogLevel.WARN, message, ...args);
   }
 
-  error(message: string, ...args: any[]) {
+  error(message: string, ...args: unknown[]) {
     this.log(LogLevel.ERROR, message, ...args);
   }
 
