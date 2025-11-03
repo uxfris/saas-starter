@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model - extends Supabase Auth
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  avatarUrl String?  @map("avatar_url")
+  metadata  Json?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  subscription Subscription?
+  usage        Usage[]
+  apiKeys      ApiKey[]
+
+  @@map("users")
+}
+
+// Subscription model for Stripe integration
+model Subscription {
+  id                   String               @id @default(uuid())
+  userId               String               @unique @map("user_id")
+  stripeCustomerId     String               @unique @map("stripe_customer_id")
+  stripeSubscriptionId String?              @unique @map("stripe_subscription_id")
+  stripePriceId        String?              @map("stripe_price_id")
+  status               SubscriptionStatus   @default(INACTIVE)
+  currentPeriodStart   DateTime?            @map("current_period_start")
+  currentPeriodEnd     DateTime?            @map("current_period_end")
+  cancelAtPeriodEnd    Boolean              @default(false) @map("cancel_at_period_end")
+  createdAt            DateTime             @default(now()) @map("created_at")
+  updatedAt            DateTime             @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+  PAST_DUE
+  CANCELED
+  TRIALING
+}
+
+// Usage tracking for AI features
+model Usage {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  type        UsageType
+  amount      Int
+  metadata    Json?
+  description String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("usage")
+}
+
+enum UsageType {
+  AI_GENERATION
+  API_CALL
+  STORAGE
+  CREDITS
+}
+
+// API Keys for user authentication
+model ApiKey {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  name      String
+  key       String   @unique
+  lastUsed  DateTime? @map("last_used")
+  expiresAt DateTime? @map("expires_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("api_keys")
+}
+
+// Webhook events for tracking Stripe webhooks
+model WebhookEvent {
+  id        String   @id @default(uuid())
+  type      String
+  data      Json
+  processed Boolean  @default(false)
+  error     String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([type, processed])
+  @@map("webhook_events")
+}
+
+// Content generation history
+model GeneratedContent {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  prompt    String
+  content   String
+  model     String
+  tokens    Int
+  metadata  Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId, createdAt])
+  @@map("generated_content")
+}
+
